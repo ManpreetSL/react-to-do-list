@@ -2,7 +2,7 @@ import React from 'react';
 
 type Props = {
   toDo: {
-    id?: string;
+    id?: number;
     title: string;
     done: boolean;
   };
@@ -10,8 +10,10 @@ type Props = {
 
 export default function ToDoItem({ toDo }: Props) {
   return (
-    <li>
-      {toDo.title} Done?: {String(toDo.done)}
-    </li>
+    <div>
+      <li>
+        {toDo.title} Done?: {String(toDo.done)}
+      </li>
+    </div>
   );
 }
