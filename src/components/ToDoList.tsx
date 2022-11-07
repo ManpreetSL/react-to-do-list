@@ -6,7 +6,11 @@ import {
   onSnapshot,
   collection,
   addDoc,
-  serverTimestamp
+  serverTimestamp,
+  query,
+  orderBy,
+  deleteDoc,
+  doc
 } from 'firebase/firestore';
 import { ToDo } from '../../types';
 
@@ -17,11 +21,16 @@ export default function ToDoList({}: Props) {
   const [toDoName, setToDoName] = useState('sasss');
   const [idCounter, setIdCounter] = useState(3);
 
+  const toDosQuery = query(
+    collection(db, 'toDos'),
+    orderBy('timestamp', 'desc')
+  );
+
   useEffect(() => {
     console.log('fetch items from Firestore');
 
     const unsubscribe = onSnapshot(
-      collection(db, 'toDos'),
+      toDosQuery,
       (snapshot) => {
         setToDos(
           snapshot.docs.map(
@@ -61,6 +70,12 @@ export default function ToDoList({}: Props) {
     setIdCounter(idCounter + 1);
     setToDoName('');
   }
+
+  async function deleteToDo(id: string) {
+    console.log('Deleting doc', id);
+    await deleteDoc(doc(db, 'toDos', id));
+  }
+
   return (
     <div>
       <h1>To do list</h1>
@@ -77,7 +92,9 @@ export default function ToDoList({}: Props) {
         </Button>
         <ul>
           {toDos.map((toDo) => {
-            return <ToDoItem toDo={toDo} key={toDo.id} />;
+            return (
+              <ToDoItem toDo={toDo} key={toDo.id} deleteToDo={deleteToDo} />
+            );
           })}
         </ul>
       </div>
