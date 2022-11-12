@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ToDoItem from './ToDoItem';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, FormControl as form, List } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 import { db } from '../../firebase';
 import {
   onSnapshot,
@@ -80,23 +81,48 @@ export default function ToDoList({}: Props) {
     <div>
       <h1>To do list</h1>
       <div className='card'>
-        <TextField
-          id='to-do-title'
-          label='Task name'
-          variant='outlined'
-          value={toDoName}
-          onChange={(e) => setToDoName(e.target.value)}
-        />
-        <Button variant='contained' onClick={() => addToDo()}>
-          Add
-        </Button>
-        <ul>
-          {toDos.map((toDo) => {
-            return (
-              <ToDoItem toDo={toDo} key={toDo.id} deleteToDo={deleteToDo} />
-            );
-          })}
-        </ul>
+        <form>
+          <Grid container spacing={2}>
+            <Grid xs={10}>
+              <TextField
+                id='to-do-title'
+                label='Task name'
+                variant='outlined'
+                fullWidth
+                value={toDoName}
+                onChange={(e) => setToDoName(e.target.value)}
+              />
+            </Grid>
+            <Grid xs={2}>
+              <Button
+                size='large'
+                variant='contained'
+                onClick={() => addToDo()}
+              >
+                Add
+              </Button>
+            </Grid>
+            <Grid xs={12}>
+              <List
+                sx={{
+                  width: '100%',
+                  maxWidth: 360,
+                  bgcolor: 'background.paper'
+                }}
+              >
+                {toDos.map((toDo) => {
+                  return (
+                    <ToDoItem
+                      toDo={toDo}
+                      key={toDo.id}
+                      deleteToDo={deleteToDo}
+                    />
+                  );
+                })}
+              </List>
+            </Grid>
+          </Grid>
+        </form>
       </div>
     </div>
   );
