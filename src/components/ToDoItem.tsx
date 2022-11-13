@@ -15,12 +15,13 @@ import { ToDo } from '../../types';
 
 type Props = {
   toDo: ToDo;
+  setDone: (id: string, done: boolean) => void;
   deleteToDo: (id: string) => void;
 };
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
-export default function ToDoItem({ toDo, deleteToDo }: Props) {
+export default function ToDoItem({ toDo, setDone, deleteToDo }: Props) {
   const [editMode, setEditMode] = useState(false);
   const [newToDoName, setNewToDoName] = useState(toDo.title);
 
@@ -44,6 +45,7 @@ export default function ToDoItem({ toDo, deleteToDo }: Props) {
             edge='start'
             {...label}
             checked={toDo.done}
+            onClick={() => setDone(toDo.id, !toDo.done)}
             tabIndex={-1}
             disableRipple
           />

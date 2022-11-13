@@ -11,7 +11,8 @@ import {
   query,
   orderBy,
   deleteDoc,
-  doc
+  doc,
+  updateDoc
 } from 'firebase/firestore';
 import { ToDo } from '../../types';
 
@@ -72,6 +73,16 @@ export default function ToDoList({}: Props) {
     setToDoName('');
   }
 
+  async function setDone(id: string, done: boolean) {
+    console.log('Setting done state for', id, 'to', done);
+
+    const docRef = doc(db, 'toDos', id);
+    console.log('docRef', docRef);
+    await updateDoc(docRef, {
+      done: done
+    });
+  }
+
   async function deleteToDo(id: string) {
     console.log('Deleting doc', id);
     await deleteDoc(doc(db, 'toDos', id));
@@ -115,6 +126,7 @@ export default function ToDoList({}: Props) {
                     <ToDoItem
                       toDo={toDo}
                       key={toDo.id}
+                      setDone={setDone}
                       deleteToDo={deleteToDo}
                     />
                   );
