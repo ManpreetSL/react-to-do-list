@@ -28,6 +28,10 @@ export default function ToDoList({}: Props) {
     orderBy('timestamp', 'desc')
   );
 
+  function findToDoById(id: string) {
+    return toDos.find((toDo) => toDo.id === id);
+  }
+
   useEffect(() => {
     console.log('fetch items from Firestore');
 
@@ -64,7 +68,7 @@ export default function ToDoList({}: Props) {
     const docRef = await addDoc(collection(db, 'toDos'), {
       title: toDoName,
       done: false,
-      timestamp: serverTimestamp()
+      createdTime: serverTimestamp()
     });
 
     console.log('docRef:', docRef.id);
@@ -80,6 +84,20 @@ export default function ToDoList({}: Props) {
     console.log('docRef', docRef);
     await updateDoc(docRef, {
       done: done
+    });
+  }
+
+  async function saveChanges(id: string, newTitle: string) {
+    console.log('Saving changes to doc', id, 'New name is', newTitle);
+
+    if (findToDoById(id)?.title === newTitle) {
+      return console.log('saveChanges: No changes. Returning...');
+    }
+
+    const docRef = doc(db, 'toDos', id);
+    await updateDoc(docRef, {
+      title: newTitle,
+      updatedTime: serverTimestamp()
     });
   }
 
@@ -127,6 +145,7 @@ export default function ToDoList({}: Props) {
                       toDo={toDo}
                       key={toDo.id}
                       setDone={setDone}
+                      saveChanges={saveChanges}
                       deleteToDo={deleteToDo}
                     />
                   );

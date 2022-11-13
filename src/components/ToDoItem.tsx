@@ -16,12 +16,18 @@ import { ToDo } from '../../types';
 type Props = {
   toDo: ToDo;
   setDone: (id: string, done: boolean) => void;
+  saveChanges: (id: string, name: string) => void;
   deleteToDo: (id: string) => void;
 };
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
-export default function ToDoItem({ toDo, setDone, deleteToDo }: Props) {
+export default function ToDoItem({
+  toDo,
+  setDone,
+  saveChanges,
+  deleteToDo
+}: Props) {
   const [editMode, setEditMode] = useState(false);
   const [newToDoName, setNewToDoName] = useState(toDo.title);
 
@@ -66,7 +72,7 @@ export default function ToDoItem({ toDo, setDone, deleteToDo }: Props) {
         <div>
           <ListItemButton>
             <ListItemIcon>
-              <DoneIcon />
+              <DoneIcon onClick={() => saveChanges(toDo.id, newToDoName)} />
             </ListItemIcon>
           </ListItemButton>
           <ListItemButton>
