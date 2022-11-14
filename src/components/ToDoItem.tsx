@@ -16,7 +16,7 @@ import { ToDo } from '../../types';
 type Props = {
   toDo: ToDo;
   setDone: (id: string, done: boolean) => void;
-  saveChanges: (id: string, name: string) => void;
+  saveChanges: (id: string, name: string) => Promise<void>;
   deleteToDo: (id: string) => void;
 };
 
@@ -34,6 +34,20 @@ export default function ToDoItem({
   function toggleEditMode() {
     console.log('toggling edit');
     setEditMode(!editMode);
+  }
+
+  async function submitChanges(id: string, newTitle: string) {
+    saveChanges(id, newTitle)
+      .then((newDoc) => {
+        console.log('submitChanges', newDoc);
+        toggleEditMode();
+      })
+      .catch((error) => console.error('Error saving changes', error));
+  }
+
+  function discardChanges() {
+    setNewToDoName(toDo.title);
+    toggleEditMode();
   }
 
   return (
@@ -72,12 +86,12 @@ export default function ToDoItem({
         <div>
           <ListItemButton>
             <ListItemIcon>
-              <DoneIcon onClick={() => saveChanges(toDo.id, newToDoName)} />
+              <DoneIcon onClick={() => submitChanges(toDo.id, newToDoName)} />
             </ListItemIcon>
           </ListItemButton>
           <ListItemButton>
             <ListItemIcon>
-              <CancelIcon />
+              <CancelIcon onClick={() => discardChanges()} />
             </ListItemIcon>
           </ListItemButton>
         </div>

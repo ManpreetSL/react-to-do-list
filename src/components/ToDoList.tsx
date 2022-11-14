@@ -91,11 +91,12 @@ export default function ToDoList({}: Props) {
     console.log('Saving changes to doc', id, 'New name is', newTitle);
 
     if (findToDoById(id)?.title === newTitle) {
-      return console.log('saveChanges: No changes. Returning...');
+      console.log('saveChanges: No changes. Returning...');
+      return Promise.resolve();
     }
 
     const docRef = doc(db, 'toDos', id);
-    await updateDoc(docRef, {
+    return updateDoc(docRef, {
       title: newTitle,
       updatedTime: serverTimestamp()
     });
